@@ -1,9 +1,39 @@
 version: '3.8'
 
 services:
-  postgres:
+  orders-service:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    container_name: order-service
+    ports:
+      - 8081:8080
+    environment:
+      - JAVA_OPTS=-Xmx512m
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5433/orders
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=postgres
+    depends_on:
+      - postgres
+    restart: unless-stopped
+  products-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: product-service
+    ports:
+      - 8080:8080
+    environment:
+      - JAVA_OPTS=-Xmx512m
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/products
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=postgres
+    depends_on:
+      - postgres
+    restart: unless-stopped
+  product-postgres:
     image: postgres:13
-    container_name: product_postgres
+    container_name: products_postgres
     restart: always
     environment:
       POSTGRES_DB: products
@@ -11,6 +41,17 @@ services:
       POSTGRES_PASSWORD: postgres
     ports:
       - "5432:5432"
+  order-postgres:
+    image: postgres:13
+    container_name: orders_postgres
+    restart: always
+    environment:
+      POSTGRES_DB: orders
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5433:5432"
 
 volumes:
   postgres_data:
+    driver: local
