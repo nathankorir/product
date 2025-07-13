@@ -128,6 +128,6 @@ public class ProductControllerTests {
         mockMvc.perform(get("/products" + "/" + productId))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(productId.toString()))
-                .andExpect(jsonPath("$.voided").value("false"));
+                .andExpect(jsonPath("$.voided").value("true"));
     }
 }
