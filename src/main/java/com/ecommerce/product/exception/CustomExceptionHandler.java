@@ -18,4 +18,9 @@ public class CustomExceptionHandler {
     public ResponseEntity<String> handleGenericException(Exception ex) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An unexpected error occurred: " + ex.getMessage());
     }
+
+    @ExceptionHandler(ProductException.class)
+    public ResponseEntity<String> handleProductException(ProductException ex) {
+        return ResponseEntity.badRequest().body(ex.getMessage());
+    }
 }

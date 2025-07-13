@@ -1,5 +1,6 @@
 package com.ecommerce.product.controller;
 
+import com.ecommerce.product.dto.QuantityDto;
 import com.ecommerce.product.service.ProductService;
 import com.ecommerce.product.dto.ProductRequestDto;
 import com.ecommerce.product.dto.ProductResponseDto;
@@ -50,4 +51,15 @@ public class ProductController {
         productService.delete(id);
         return ResponseEntity.noContent().build();
     }
+
+    @PostMapping("/{id}/dispense")
+    public ResponseEntity<ProductResponseDto> dispenseInventory(@PathVariable UUID id, @RequestBody QuantityDto dto) {
+        return ResponseEntity.ok(productService.dispense(id, dto.getQuantity()));
+    }
+
+    @PostMapping("/{id}/restock")
+    public ResponseEntity<ProductResponseDto> restockInventory(@PathVariable UUID id, @RequestBody QuantityDto dto) {
+        return ResponseEntity.ok(productService.restock(id, dto.getQuantity()));
+    }
+
 }

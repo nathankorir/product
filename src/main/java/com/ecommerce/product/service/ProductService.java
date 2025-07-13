@@ -1,5 +1,6 @@
 package com.ecommerce.product.service;
 
+import com.ecommerce.product.exception.ProductException;
 import com.ecommerce.product.model.Product;
 import com.ecommerce.product.repository.ProductRepository;
 import com.ecommerce.product.dto.ProductRequestDto;
@@ -51,5 +52,25 @@ public class ProductService {
                 .orElseThrow(() -> new NoSuchElementException("Product does not exist"));
         product.setVoided(true);
         productRepository.save(product);
+    }
+
+    public ProductResponseDto dispense(UUID id, int quantity) {
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Product not found"));
+
+        if (product.getQuantity() < quantity) {
+            throw new ProductException("Not enough inventory");
+        }
+
+        product.setQuantity(product.getQuantity() - quantity);
+        return productMapper.toDto(productRepository.save(product));
+    }
+
+    public ProductResponseDto restock(UUID id, int quantity) {
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Product not found"));
+
+        product.setQuantity(product.getQuantity() + quantity);
+        return productMapper.toDto(productRepository.save(product));
     }
 }
