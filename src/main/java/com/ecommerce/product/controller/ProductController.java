@@ -33,8 +33,10 @@ public class ProductController {
     @GetMapping("/{id}")
     public ResponseEntity<ProductResponseDto> get(@PathVariable UUID id) {
         logger.info("Get product request {}", id);
-        return productService.get(id).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
+        ProductResponseDto product = productService.get(id);
+        return ResponseEntity.ok(product);
     }
+
 
     @PutMapping("/{id}")
     public ResponseEntity<ProductResponseDto> update(@PathVariable UUID id, @RequestBody ProductRequestDto dto) {

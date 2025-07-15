@@ -26,15 +26,27 @@ public class ProductService {
     }
 
     public ProductResponseDto create(ProductRequestDto dto) {
+        boolean exists = productRepository.existsByNameIgnoreCaseAndVoidedFalse(dto.getName());
+        if (exists) {
+            throw new ProductException("A non-voided product with this name already exists: " + dto.getName());
+        }
         return productMapper.toDto(productRepository.save(productMapper.toEntity(dto)));
     }
 
-    public Optional<ProductResponseDto> get(UUID id) {
-        return productRepository.findById(id).map(productMapper::toDto);
+    public ProductResponseDto get(UUID id) {
+        Product product = productRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Product does not exist"));
+        return productMapper.toDto(product);
     }
 
     public ProductResponseDto update(UUID id, ProductRequestDto dto) {
-        Product product = productRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Product does not exist"));
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Product does not exist"));
+
+        boolean nameConflict = productRepository.existsByNameIgnoreCaseAndVoidedFalse(dto.getName());
+        if (nameConflict && !product.getName().equalsIgnoreCase(dto.getName())) {
+            throw new ProductException("A non-voided product with this name already exists: " + dto.getName());
+        }
+
         productMapper.updateFromDTO(dto, product);
         return productMapper.toDto(productRepository.save(product));
     }

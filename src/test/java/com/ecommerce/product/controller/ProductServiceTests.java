@@ -70,19 +70,18 @@ public class ProductServiceTests {
         when(productRepository.findById(productId)).thenReturn(Optional.of(product));
         when(productMapper.toDto(product)).thenReturn(responseDto);
 
-        Optional<ProductResponseDto> result = productService.get(productId);
+        ProductResponseDto result = productService.get(productId);
 
-        assertTrue(result.isPresent());
-        assertEquals(responseDto, result.get());
+        assertNotNull(result);
+        assertEquals(responseDto, result);
     }
 
+
     @Test
-    void get_nonexistentId_shouldReturnEmptyOptional() {
+    void get_nonexistentId_shouldThrowException() {
         when(productRepository.findById(productId)).thenReturn(Optional.empty());
 
-        Optional<ProductResponseDto> result = productService.get(productId);
-
-        assertTrue(result.isEmpty());
+        assertThrows(NoSuchElementException.class, () -> productService.get(productId));
     }
 
     @Test

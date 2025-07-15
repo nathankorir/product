@@ -12,5 +12,7 @@ CREATE TABLE product
     updated_at TIMESTAMP    NOT NULL DEFAULT now()
 );
 
+CREATE UNIQUE INDEX unique_non_voided_product_name ON product (LOWER(name)) WHERE voided = false;
+
 -- Index searchable columns
 CREATE INDEX idx_product_name ON product (name);

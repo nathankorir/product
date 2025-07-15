@@ -5,20 +5,20 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: product-service
+    container_name: products-service
     ports:
-      - 8080:8080
+      - "8080:8080"
     environment:
       - JAVA_OPTS=-Xmx512m
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/products
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://products-postgres:5432/products
       - SPRING_DATASOURCE_USERNAME=postgres
       - SPRING_DATASOURCE_PASSWORD=postgres
     depends_on:
-      - product-postgres
+      - products-postgres
     restart: unless-stopped
-  product-postgres:
+  products-postgres:
     image: postgres:13
-    container_name: products_postgres
+    container_name: products-postgres
     restart: always
     environment:
       POSTGRES_DB: products
