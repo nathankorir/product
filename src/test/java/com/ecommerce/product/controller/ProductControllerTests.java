@@ -29,13 +29,13 @@ public class ProductControllerTests {
 
     @Test
     void whenCreateProductThenSuccess() throws Exception {
-        ProductRequestDto request = new ProductRequestDto("Samsung Galaxy", 10, BigDecimal.valueOf(10000));
+        ProductRequestDto request = new ProductRequestDto("Samsung Galaxy S1", 10, BigDecimal.valueOf(10000));
 
         mockMvc.perform(post("/products")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.name").value("Samsung Galaxy"))
+                .andExpect(jsonPath("$.name").value("Samsung Galaxy S1"))
                 .andExpect(jsonPath("$.quantity").value(10))
                 .andExpect(jsonPath("$.price").value(BigDecimal.valueOf(10000)));
     }
@@ -43,7 +43,7 @@ public class ProductControllerTests {
 
     @Test
     void whenGetProductByIdThenReturnProduct() throws Exception {
-        ProductRequestDto request = new ProductRequestDto("Samsung Galaxy", 10, BigDecimal.valueOf(10000));
+        ProductRequestDto request = new ProductRequestDto("Samsung Galaxy S2", 10, BigDecimal.valueOf(10000));
 
         String response = mockMvc.perform(post("/products")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -59,12 +59,12 @@ public class ProductControllerTests {
         mockMvc.perform(get("/products/" + "/" + productId))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(productId.toString()))
-                .andExpect(jsonPath("$.name").value("Samsung Galaxy"));
+                .andExpect(jsonPath("$.name").value("Samsung Galaxy S2"));
     }
 
     @Test
     void whenUpdateProductThenSuccess() throws Exception {
-        ProductRequestDto request = new ProductRequestDto("Samsung Galaxy", 10, BigDecimal.valueOf(10000));
+        ProductRequestDto request = new ProductRequestDto("Samsung Galaxy A3", 10, BigDecimal.valueOf(10000));
 
         String response = mockMvc.perform(post("/products")
                         .contentType(MediaType.APPLICATION_JSON)
