@@ -40,11 +40,13 @@ public class ProductController {
 
     @PutMapping("/{id}")
     public ResponseEntity<ProductResponseDto> update(@PathVariable UUID id, @RequestBody ProductRequestDto dto) {
+        logger.info("Update product request {}", id);
         return ResponseEntity.ok(productService.update(id, dto));
     }
 
     @GetMapping
     public Page<ProductResponseDto> getProducts(@RequestParam(required = false) String name, Pageable pageable) {
+        logger.info("Get products request {}", pageable.toString());
         return productService.getProducts(name, pageable);
     }
 
@@ -56,11 +58,13 @@ public class ProductController {
 
     @PostMapping("/{id}/dispense")
     public ResponseEntity<ProductResponseDto> dispenseInventory(@PathVariable UUID id, @RequestBody QuantityDto dto) {
+        logger.info("Dispense product request {}", id);
         return ResponseEntity.ok(productService.dispense(id, dto.getQuantity()));
     }
 
     @PostMapping("/{id}/restock")
     public ResponseEntity<ProductResponseDto> restockInventory(@PathVariable UUID id, @RequestBody QuantityDto dto) {
+        logger.info("Restock product request {}", id);
         return ResponseEntity.ok(productService.restock(id, dto.getQuantity()));
     }
 

@@ -6,17 +6,18 @@ import com.ecommerce.product.repository.ProductRepository;
 import com.ecommerce.product.dto.ProductRequestDto;
 import com.ecommerce.product.dto.ProductResponseDto;
 import com.ecommerce.product.mapper.ProductMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 import java.util.NoSuchElementException;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
 public class ProductService {
+    private static final Logger logger = LoggerFactory.getLogger(ProductService.class);
     private final ProductRepository productRepository;
     private final ProductMapper productMapper;
 
@@ -28,6 +29,7 @@ public class ProductService {
     public ProductResponseDto create(ProductRequestDto dto) {
         boolean exists = productRepository.existsByNameIgnoreCaseAndVoidedFalse(dto.getName());
         if (exists) {
+            logger.error("Product with name {} already exists", dto.getName());
             throw new ProductException("A non-voided product with this name already exists: " + dto.getName());
         }
         return productMapper.toDto(productRepository.save(productMapper.toEntity(dto)));
@@ -44,6 +46,7 @@ public class ProductService {
 
         boolean nameConflict = productRepository.existsByNameIgnoreCaseAndVoidedFalse(dto.getName());
         if (nameConflict && !product.getName().equalsIgnoreCase(dto.getName())) {
+            logger.error("Product with name {} already exists", dto.getName());
             throw new ProductException("A non-voided product with this name already exists: " + dto.getName());
         }
 
@@ -71,6 +74,7 @@ public class ProductService {
                 .orElseThrow(() -> new NoSuchElementException("Product not found"));
 
         if (product.getQuantity() < quantity) {
+            logger.error("Product quantity less than requested quantity {}", quantity);
             throw new ProductException("Not enough inventory");
         }
 
